@@ -36,6 +36,8 @@ export default async function RootLayout({ children }) {
               )}
               {s?.role === 'COMPANY' && <Link href="/painel">Meu painel</Link>}
               {s?.role === 'ADMIN' && <Link href="/admin">Admin</Link>}
+              {s?.role === 'CANDIDATE' && <Link href="/conta">Minha conta</Link>}
+              {s && <Link href="/conta/senha">Senha</Link>}
               {s && <Link href="/sair">Sair</Link>}
             </nav>
           </div>

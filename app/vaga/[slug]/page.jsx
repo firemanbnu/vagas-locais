@@ -3,6 +3,8 @@ import { notFound } from 'next/navigation';
 import { sql } from '@/lib/db';
 import { WORK_MODEL, EMPLOYMENT, REPORT_REASON, salaryText, dateBR } from '@/lib/format';
 import { reportJob } from '@/app/actions/public';
+import { toggleSaveJob } from '@/app/actions/account';
+import { getSession } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -21,6 +23,11 @@ export default async function JobPage({ params, searchParams }) {
 
   await sql`SELECT track_job_event(${job.id}::uuid, 'VIEW')`;
   const [terms] = await sql`SELECT content_md FROM terms_versions WHERE is_current ORDER BY published_at DESC LIMIT 1`;
+  const session = await getSession();
+  const isCandidate = session?.role === 'CANDIDATE';
+  const saved = isCandidate
+    ? (await sql`SELECT 1 FROM saved_jobs WHERE user_id = ${session.uid} AND job_id = ${job.id}`).length > 0
+    : false;
 
   const channelLabel = { WHATSAPP: 'Candidatar-se pelo WhatsApp', EMAIL: 'Candidatar-se por e-mail', URL: 'Candidatar-se no site da empresa' };
 
@@ -52,6 +59,20 @@ export default async function JobPage({ params, searchParams }) {
             <a className="btn block" href={`/api/vagas/${job.id}/candidatar`} rel="nofollow">
               {channelLabel[job.apply_channel]}
             </a>
+            {(isCandidate || !session) && (
+              <form action={toggleSaveJob} style={{ marginTop: 8 }}>
+                <input type="hidden" name="job_id" value={job.id} />
+                <input type="hidden" name="slug" value={job.slug} />
+                <button className="btn secondary block" type="submit">
+                  {saved ? '★ Vaga salva (remover)' : '☆ Salvar vaga'}
+                </button>
+              </form>
+            )}
+            {!session && (
+              <p className="hint" style={{ textAlign: 'center', marginTop: 6 }}>
+                Para salvar vagas, <Link href="/cadastro-candidato">crie uma conta de candidato</Link>.
+              </p>
+            )}
           </div>
 
           <div className="legal">

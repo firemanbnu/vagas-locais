@@ -79,7 +79,7 @@ export async function login(formData) {
   await sql`UPDATE users SET last_login_at = now() WHERE id = ${u.id}`;
   await createSession({ uid: u.id, role: u.role, ...(u.cid ? { cid: u.cid } : {}) });
   const safeNext = next.startsWith('/') && !next.startsWith('//') ? next : null;
-  redirect(safeNext || (u.role === 'ADMIN' ? '/admin' : '/painel'));
+  redirect(safeNext || ({ ADMIN: '/admin', CANDIDATE: '/conta' }[u.role] || '/painel'));
 }
 
 export async function logout() {

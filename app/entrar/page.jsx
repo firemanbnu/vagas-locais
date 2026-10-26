@@ -23,7 +23,9 @@ export default async function Entrar({ searchParams }) {
           <button className="btn block" type="submit">Entrar</button>
         </form>
       </div>
-      <p style={{ marginTop: 14 }}>Ainda não anuncia? <Link href="/cadastro">Criar conta da empresa</Link></p>
+      <p style={{ marginTop: 14 }}>
+        Ainda não tem conta? <Link href="/cadastro">Sou empresa</Link> · <Link href="/cadastro-candidato">Sou candidato</Link>
+      </p>
     </div>
   );
 }
