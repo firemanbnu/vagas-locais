@@ -68,8 +68,8 @@ export default async function Cadastro({ searchParams }) {
             <label className="check">
               <input type="checkbox" name="terms" required />
               <span>
-                Li e aceito os <Link href="/termos" target="_blank">Termos de Uso</Link>, incluindo a cláusula de natureza do serviço e
-                isenção de responsabilidade, e declaro que não cobrarei taxas de candidatos.
+                Li e concordo com os{' '}
+                <Link href="/termos/anunciantes" target="_blank">Termos de Uso para Anunciantes da Empregos Litoral</Link>.
               </span>
             </label>
           </div>

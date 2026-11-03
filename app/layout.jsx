@@ -51,7 +51,10 @@ export default async function RootLayout({ children }) {
               Nunca pague para participar de um processo seletivo.
             </p>
             <p>
-              <Link href="/termos">Termos de uso</Link> · <Link href="/cadastro">Anunciar uma vaga</Link>
+              <Link href="/termos/anunciantes">Termos para Anunciantes</Link> ·{' '}
+              <Link href="/termos/candidatos">Termos para Candidatos</Link> ·{' '}
+              <Link href="/termos/privacidade">Política de Privacidade</Link> ·{' '}
+              <Link href="/cadastro">Anunciar uma vaga</Link>
             </p>
           </div>
         </footer>
