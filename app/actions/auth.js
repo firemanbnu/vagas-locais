@@ -2,6 +2,7 @@
 
 import bcrypt from 'bcryptjs';
 import { redirect } from 'next/navigation';
+import { headers } from 'next/headers';
 import { sql, tx, clientIp } from '@/lib/db';
 import { createSession, destroySession } from '@/lib/auth';
 import { normalizeWhatsapp } from '@/lib/format';
@@ -28,7 +29,7 @@ export async function signup(formData) {
   if (!whatsapp) back('/cadastro', 'WhatsApp inválido. Use DDD + número, ex.: (47) 99999-9999.', keep);
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) back('/cadastro', 'E-mail inválido.', keep);
   if (password.length < 8) back('/cadastro', 'A senha precisa ter pelo menos 8 caracteres.', keep);
-  if (!accepted) back('/cadastro', 'É preciso aceitar os Termos de Uso.', keep);
+  if (!accepted) back('/cadastro', 'É preciso aceitar os Termos de Uso para Anunciantes.', keep);
 
   const hash = await bcrypt.hash(password, 10);
   const ip = await clientIp();
@@ -42,11 +43,12 @@ export async function signup(formData) {
       const [c] = await t`
         INSERT INTO companies (owner_user_id, cnpj, legal_name, trade_name, whatsapp, contact_email, city_id)
         VALUES (${u.id}, ${cnpj}, ${name}, ${trade}, ${whatsapp}, ${email}, ${cityId}) RETURNING id`;
-      const [terms] = await t`SELECT id FROM terms_versions WHERE is_current AND audience IN ('ALL','COMPANY') ORDER BY published_at DESC LIMIT 1`;
-      if (terms) {
-        await t`INSERT INTO terms_acceptances (user_id, company_id, terms_version_id, ip)
-                VALUES (${u.id}, ${c.id}, ${terms.id}, ${ip}::inet)`;
-      }
+      // Registra o aceite dos Termos para Anunciantes vigentes (e da cláusula geral), com IP e navegador
+      const ua = (await headers()).get('user-agent')?.slice(0, 300) || null;
+      await t`
+        INSERT INTO terms_acceptances (user_id, company_id, terms_version_id, ip, user_agent)
+        SELECT ${u.id}, ${c.id}, id, ${ip}::inet, ${ua}
+          FROM terms_versions WHERE is_current AND audience IN ('COMPANY', 'ALL')`;
       return { uid: u.id, role: 'COMPANY', cid: c.id };
     });
   } catch (e) {

@@ -1,35 +1,32 @@
+import Link from 'next/link';
 import { sql } from '@/lib/db';
 import { dateBR } from '@/lib/format';
 
 export const dynamic = 'force-dynamic';
-export const metadata = { title: 'Termos de uso — Empregos Litoral' };
+export const metadata = { title: 'Termos e políticas — Empregos Litoral' };
 
-function renderMd(md) {
-  // Markdown mínimo: títulos "## " e negrito "**"
-  return md.split(/\n\n+/).map((block, i) => {
-    if (block.startsWith('## ')) return <h2 key={i}>{block.slice(3)}</h2>;
-    const parts = block.split(/\*\*(.+?)\*\*/g);
-    return (
-      <p key={i}>
-        {parts.map((p, k) => (k % 2 ? <strong key={k}>{p}</strong> : p))}
-      </p>
-    );
-  });
-}
+const ORDER = ['anunciantes', 'candidatos', 'privacidade', 'clausula-geral'];
+const DESC = {
+  anunciantes: 'Regras para empresas e recrutadores que publicam vagas.',
+  candidatos: 'Regras e avisos para quem procura emprego na plataforma.',
+  privacidade: 'Quais dados coletamos, para que usamos e seus direitos (LGPD).',
+  'clausula-geral': 'Resumo da natureza do serviço, exibido em todas as vagas.',
+};
 
 export default async function Termos() {
-  const [t] = await sql`SELECT version, content_md, published_at FROM terms_versions WHERE is_current ORDER BY published_at DESC LIMIT 1`;
+  const docs = await sql`SELECT slug, title, version, published_at FROM terms_versions WHERE is_current AND slug IS NOT NULL`;
+  docs.sort((a, b) => ORDER.indexOf(a.slug) - ORDER.indexOf(b.slug));
   return (
     <div className="container narrow section">
-      <h1>Termos de uso</h1>
-      {t ? (
-        <div className="card">
-          <p className="hint">Versão {t.version} · publicada em {dateBR(t.published_at)}</p>
-          {renderMd(t.content_md)}
-        </div>
-      ) : (
-        <p>Termos ainda não publicados.</p>
-      )}
+      <h1>Termos e políticas</h1>
+      <div className="stack">
+        {docs.map((d) => (
+          <Link key={d.slug} href={`/termos/${d.slug}`} className="card job-card">
+            <h3>{d.title}</h3>
+            <p className="hint" style={{ margin: 0 }}>{DESC[d.slug]} · versão {d.version} de {dateBR(d.published_at)}</p>
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }

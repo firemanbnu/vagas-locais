@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { sql } from '@/lib/db';
+import { redirect } from 'next/navigation';
 import { requireCandidate } from '@/lib/auth';
+import { hasAcceptedCurrent } from '@/lib/terms';
 import { WORK_MODEL, salaryText, dateBR } from '@/lib/format';
 import { toggleSaveJob, createAlert, deleteAlert } from '@/app/actions/account';
 
@@ -11,6 +13,7 @@ const OK = { bemvindo: 'Conta criada! Salve vagas e crie alertas para a sua regi
 
 export default async function Conta({ searchParams }) {
   const s = await requireCandidate();
+  if (!(await hasAcceptedCurrent(s.uid, 'CANDIDATE'))) redirect('/termos/aceitar?next=/conta');
   const sp = await searchParams;
   const [[me], saved, alerts, cities, categories] = await Promise.all([
     sql`SELECT u.name, u.email, p.city_id FROM users u LEFT JOIN candidate_profiles p ON p.user_id = u.id WHERE u.id = ${s.uid}`,

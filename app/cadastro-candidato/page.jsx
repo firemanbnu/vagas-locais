@@ -49,7 +49,10 @@ export default async function CadastroCandidato({ searchParams }) {
           <div className="field">
             <label className="check">
               <input type="checkbox" name="terms" required />
-              <span>Li e aceito os <Link href="/termos" target="_blank">Termos de Uso</Link>.</span>
+              <span>
+                Li e concordo com os{' '}
+                <Link href="/termos/candidatos" target="_blank">Termos de Uso para Candidatos da Empregos Litoral</Link>.
+              </span>
             </label>
           </div>
           <button className="btn block" type="submit">Criar conta</button>

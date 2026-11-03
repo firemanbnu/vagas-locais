@@ -22,7 +22,7 @@ export default async function JobPage({ params, searchParams }) {
   if (!job) notFound();
 
   await sql`SELECT track_job_event(${job.id}::uuid, 'VIEW')`;
-  const [terms] = await sql`SELECT content_md FROM terms_versions WHERE is_current ORDER BY published_at DESC LIMIT 1`;
+  const [terms] = await sql`SELECT content_md FROM terms_versions WHERE is_current AND audience = 'ALL' ORDER BY published_at DESC LIMIT 1`;
   const session = await getSession();
   const isCandidate = session?.role === 'CANDIDATE';
   const saved = isCandidate
@@ -78,7 +78,7 @@ export default async function JobPage({ params, searchParams }) {
           <div className="legal">
             <strong>Aviso:</strong> esta plataforma apenas divulga a vaga. O anunciante é o único responsável pelas
             informações e pelo processo seletivo. Nenhuma empresa pode cobrar taxa do candidato.{' '}
-            <Link href="/termos">Termos de uso</Link>.
+            <Link href="/termos/candidatos">Termos de Uso para Candidatos</Link>.
             {terms && (
               <details style={{ marginTop: 8 }}>
                 <summary>Ler a cláusula de isenção de responsabilidade</summary>

@@ -3,7 +3,8 @@
 import bcrypt from 'bcryptjs';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
-import { sql, tx } from '@/lib/db';
+import { headers } from 'next/headers';
+import { sql, tx, clientIp } from '@/lib/db';
 import { getSession, createSession, requireCandidate } from '@/lib/auth';
 import { normalizeWhatsapp } from '@/lib/format';
 
@@ -48,9 +49,11 @@ export async function signupCandidate(formData) {
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) fail('E-mail inválido.');
   if (password.length < 8) fail('A senha precisa ter pelo menos 8 caracteres.');
   if (whatsappRaw && !whatsapp) fail('WhatsApp inválido. Use DDD + número.');
-  if (formData.get('terms') !== 'on') fail('É preciso aceitar os Termos de Uso.');
+  if (formData.get('terms') !== 'on') fail('É preciso aceitar os Termos de Uso para Candidatos.');
 
   const hash = await bcrypt.hash(password, 10);
+  const ip = await clientIp();
+  const ua = (await headers()).get('user-agent')?.slice(0, 300) || null;
   let uid;
   try {
     uid = await tx(null, 'app', async (t) => {
@@ -59,8 +62,10 @@ export async function signupCandidate(formData) {
         VALUES (${email}, ${name}, 'CANDIDATE', ${whatsapp}, ${hash}) RETURNING id`;
       await t`INSERT INTO candidate_profiles (user_id, full_name, whatsapp, city_id)
               VALUES (${u.id}, ${name}, ${whatsapp}, ${cityId})`;
-      const [terms] = await t`SELECT id FROM terms_versions WHERE is_current AND audience IN ('ALL','CANDIDATE') ORDER BY published_at DESC LIMIT 1`;
-      if (terms) await t`INSERT INTO terms_acceptances (user_id, terms_version_id) VALUES (${u.id}, ${terms.id})`;
+      await t`
+        INSERT INTO terms_acceptances (user_id, terms_version_id, ip, user_agent)
+        SELECT ${u.id}, id, ${ip}::inet, ${ua}
+          FROM terms_versions WHERE is_current AND audience IN ('CANDIDATE', 'ALL')`;
       return u.id;
     });
   } catch (e) {

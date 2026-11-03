@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import { sql, tx, settings } from '@/lib/db';
 import { requireCompany } from '@/lib/auth';
+import { hasAcceptedCurrent } from '@/lib/terms';
 import { sendVerificationCode, whatsappDemo } from '@/lib/whatsapp';
 import { createCharge, pixProvider, pixDemo } from '@/lib/pix';
 import { normalizeWhatsapp, parseMoney, slugify } from '@/lib/format';
@@ -75,6 +76,9 @@ const CHANNELS = ['WHATSAPP', 'EMAIL', 'URL'];
 
 /** Tenta publicar e redireciona conforme o resultado. */
 async function publishFlow(s, jobId) {
+  // Só publica com aceite da versão vigente dos Termos para Anunciantes
+  if (!(await hasAcceptedCurrent(s.uid, 'COMPANY'))) redirect('/termos/aceitar?next=/painel');
+
   let result;
   try {
     result = await tx(s, 'app', async (t) => {
