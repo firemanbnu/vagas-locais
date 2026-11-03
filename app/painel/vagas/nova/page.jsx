@@ -4,7 +4,7 @@ import { brl } from '@/lib/format';
 import JobForm from './JobForm';
 
 export const dynamic = 'force-dynamic';
-export const metadata = { title: 'Nova vaga — Vagas Locais' };
+export const metadata = { title: 'Nova vaga — Empregos Litoral' };
 
 export default async function NovaVaga({ searchParams }) {
   const s = await requireCompany();

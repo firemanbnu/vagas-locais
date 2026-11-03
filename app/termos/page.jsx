@@ -2,7 +2,7 @@ import { sql } from '@/lib/db';
 import { dateBR } from '@/lib/format';
 
 export const dynamic = 'force-dynamic';
-export const metadata = { title: 'Termos de uso — Vagas Locais' };
+export const metadata = { title: 'Termos de uso — Empregos Litoral' };
 
 function renderMd(md) {
   // Markdown mínimo: títulos "## " e negrito "**"

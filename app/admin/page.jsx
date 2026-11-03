@@ -2,7 +2,7 @@ import { sql } from '@/lib/db';
 import { brl, dateTimeBR } from '@/lib/format';
 
 export const dynamic = 'force-dynamic';
-export const metadata = { title: 'Admin — Vagas Locais' };
+export const metadata = { title: 'Admin — Empregos Litoral' };
 
 export default async function AdminHome() {
   const [[m], payments] = await Promise.all([

@@ -3,7 +3,7 @@ import { sql } from '@/lib/db';
 import { signupCandidate } from '@/app/actions/account';
 
 export const dynamic = 'force-dynamic';
-export const metadata = { title: 'Criar conta de candidato — Vagas Locais' };
+export const metadata = { title: 'Criar conta de candidato — Empregos Litoral' };
 
 export default async function CadastroCandidato({ searchParams }) {
   const sp = await searchParams;

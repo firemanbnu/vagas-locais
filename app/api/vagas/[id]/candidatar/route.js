@@ -17,7 +17,7 @@ export async function GET(req, { params }) {
 
   let target;
   if (j.apply_channel === 'WHATSAPP') {
-    target = waLink(j.apply_whatsapp, `Olá! Vi a vaga "${j.title}" no Vagas Locais e gostaria de me candidatar.`);
+    target = waLink(j.apply_whatsapp, `Olá! Vi a vaga "${j.title}" no Empregos Litoral e gostaria de me candidatar.`);
   } else if (j.apply_channel === 'EMAIL') {
     target = `mailto:${j.apply_email}?subject=${encodeURIComponent(`Candidatura: ${j.title}`)}`;
   } else {
