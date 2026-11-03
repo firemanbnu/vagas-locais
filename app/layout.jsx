@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { getSession } from '@/lib/auth';
 import { whatsappDemo } from '@/lib/whatsapp';
 import { pixDemo } from '@/lib/pix';
+import { settings } from '@/lib/db';
 
 export const metadata = {
   metadataBase: new URL('https://www.empregoslitoral.com.br'),
@@ -14,7 +15,15 @@ export const viewport = { width: 'device-width', initialScale: 1, themeColor: '#
 
 export default async function RootLayout({ children }) {
   const s = await getSession();
-  const demo = whatsappDemo() || pixDemo();
+  // O aviso só aparece quando alguma função simulada está realmente em uso:
+  // código do WhatsApp na tela (verificação ligada) ou PIX de mentira (vaga com preço).
+  let demo = false;
+  try {
+    const st = await settings();
+    demo = (whatsappDemo() && st.whatsapp_verification_required) || (pixDemo() && st.job_price_cents > 0);
+  } catch {
+    demo = whatsappDemo() || pixDemo();
+  }
   return (
     <html lang="pt-BR">
       <body>
