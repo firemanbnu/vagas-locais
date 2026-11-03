@@ -5,7 +5,7 @@ import { WORK_MODEL, salaryText, dateBR } from '@/lib/format';
 import { toggleSaveJob, createAlert, deleteAlert } from '@/app/actions/account';
 
 export const dynamic = 'force-dynamic';
-export const metadata = { title: 'Minha conta — Vagas Locais' };
+export const metadata = { title: 'Minha conta — Empregos Litoral' };
 
 const OK = { bemvindo: 'Conta criada! Salve vagas e crie alertas para a sua região.', alerta: 'Alerta criado.' };
 

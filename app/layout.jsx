@@ -5,7 +5,8 @@ import { whatsappDemo } from '@/lib/whatsapp';
 import { pixDemo } from '@/lib/pix';
 
 export const metadata = {
-  title: 'Vagas Locais — empregos na sua região',
+  metadataBase: new URL('https://www.empregoslitoral.com.br'),
+  title: 'Empregos Litoral — vagas de emprego no litoral e Vale do Itajaí',
   description: 'Vagas de emprego da sua cidade. Candidate-se direto com a empresa pelo WhatsApp, e-mail ou site.',
 };
 
@@ -25,7 +26,7 @@ export default async function RootLayout({ children }) {
         <header className="topbar">
           <div className="container">
             <Link href="/" className="logo">
-              Vagas<span>Locais</span>
+              Empregos<span>Litoral</span>
             </Link>
             <nav className="nav">
               {!s && <Link href="/entrar">Entrar</Link>}

@@ -1,4 +1,4 @@
-# Vagas Locais
+# Empregos Litoral
 
 Plataforma de classificados de vagas de emprego locais, com expansão por cidades/regiões.
 

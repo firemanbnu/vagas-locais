@@ -4,7 +4,7 @@ import { getSession } from '@/lib/auth';
 import { changePassword } from '@/app/actions/account';
 
 export const dynamic = 'force-dynamic';
-export const metadata = { title: 'Alterar senha — Vagas Locais' };
+export const metadata = { title: 'Alterar senha — Empregos Litoral' };
 
 const HOME = { ADMIN: '/admin', COMPANY: '/painel', CANDIDATE: '/conta' };
 

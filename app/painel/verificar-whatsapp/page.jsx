@@ -7,7 +7,7 @@ import { whatsappDemo } from '@/lib/whatsapp';
 import { sendCode, confirmCode, changeWhatsapp } from '@/app/actions/company';
 
 export const dynamic = 'force-dynamic';
-export const metadata = { title: 'Verificar WhatsApp — Vagas Locais' };
+export const metadata = { title: 'Verificar WhatsApp — Empregos Litoral' };
 
 export default async function VerificarWhatsapp({ searchParams }) {
   const s = await requireCompany();

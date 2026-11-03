@@ -9,7 +9,7 @@ import AutoRefresh from './AutoRefresh';
 import CopyButton from './CopyButton';
 
 export const dynamic = 'force-dynamic';
-export const metadata = { title: 'Pagamento PIX — Vagas Locais' };
+export const metadata = { title: 'Pagamento PIX — Empregos Litoral' };
 
 export default async function Pagamento({ params }) {
   const s = await requireCompany();

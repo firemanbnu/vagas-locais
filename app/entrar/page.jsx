@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { login } from '@/app/actions/auth';
 
-export const metadata = { title: 'Entrar — Vagas Locais' };
+export const metadata = { title: 'Entrar — Empregos Litoral' };
 
 export default async function Entrar({ searchParams }) {
   const sp = await searchParams;

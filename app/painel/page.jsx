@@ -5,7 +5,7 @@ import { JOB_STATUS, dateBR, formatWhatsapp, brl } from '@/lib/format';
 import { closeJob, publishJob } from '@/app/actions/company';
 
 export const dynamic = 'force-dynamic';
-export const metadata = { title: 'Meu painel — Vagas Locais' };
+export const metadata = { title: 'Meu painel — Empregos Litoral' };
 
 const OK = {
   verificado_cota: 'WhatsApp confirmado! Suas vagas grátis foram liberadas.',
