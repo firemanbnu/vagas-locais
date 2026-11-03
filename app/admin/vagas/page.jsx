@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import { sql } from '@/lib/db';
 import { JOB_STATUS, dateBR } from '@/lib/format';
-import { setJobStatus } from '@/app/actions/admin';
+import { setJobStatus, deleteJobAdmin } from '@/app/actions/admin';
+import ConfirmButton from '@/components/ConfirmButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,7 +17,7 @@ export default async function AdminVagas({ searchParams }) {
      ORDER BY j.created_at DESC LIMIT 200`;
   return (
     <div className="section" style={{ paddingTop: 0 }}>
-      {sp.ok && <div className="alert ok">Status atualizado.</div>}
+      {sp.ok && <div className="alert ok">{sp.ok === 'excluida' ? 'Vaga excluída.' : 'Status atualizado.'}</div>}
       {sp.erro && <div className="alert err">{sp.erro}</div>}
       <div className="subnav">
         <Link href="/admin/vagas" className={!status ? 'on' : ''}>Todas</Link>
@@ -44,6 +45,13 @@ export default async function AdminVagas({ searchParams }) {
                     {j.status === 'PUBLISHED' && <button className="btn danger small" name="status" value="SUSPENDED">Suspender</button>}
                     {j.status === 'SUSPENDED' && <button className="btn small" name="status" value="PUBLISHED">Reativar</button>}
                     {j.status !== 'CLOSED' && <button className="btn secondary small" name="status" value="CLOSED">Encerrar</button>}
+                    <ConfirmButton
+                      className="btn danger small"
+                      formAction={deleteJobAdmin}
+                      message={`Excluir definitivamente a vaga “${j.title}”? Esta ação não pode ser desfeita.`}
+                    >
+                      Excluir
+                    </ConfirmButton>
                   </form>
                 </td>
               </tr>
