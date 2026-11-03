@@ -81,7 +81,7 @@ export default async function JobPage({ params, searchParams }) {
             <Link href="/termos/candidatos">Termos de Uso para Candidatos</Link>.
             {terms && (
               <details style={{ marginTop: 8 }}>
-                <summary>Ler a cláusula de isenção de responsabilidade</summary>
+                <summary>Ler a cláusula de natureza do serviço</summary>
                 <p className="pre" style={{ marginTop: 8 }}>{terms.content_md.replace(/\*\*/g, '').replace(/^## /m, '')}</p>
               </details>
             )}
