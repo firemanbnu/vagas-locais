@@ -179,6 +179,20 @@ export async function closeJob(formData) {
   redirect('/painel?ok=encerrada');
 }
 
+export async function deleteJob(formData) {
+  const s = await requireCompany();
+  const id = String(formData.get('job_id'));
+  const [r] = await tx(s, 'app', (t) => t`SELECT delete_job(${id}::uuid, ${s.cid}::uuid, false) AS result`);
+  revalidatePath('/');
+  const msg = {
+    DELETED: null,
+    SUSPENDED: 'Vagas suspensas pela moderação não podem ser excluídas.',
+    HAS_HISTORY: 'Esta vaga tem pagamento ou denúncia registrados e não pode ser excluída. Use “Encerrar” para tirá-la do ar.',
+    NOT_FOUND: 'Vaga não encontrada.',
+  }[r.result];
+  redirect(msg ? `/painel?erro=${encodeURIComponent(msg)}` : '/painel?ok=excluida');
+}
+
 // Modo demonstração: simula o webhook do PSP confirmando o PIX
 export async function simulatePixPayment(formData) {
   const s = await requireCompany();

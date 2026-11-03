@@ -2,7 +2,8 @@ import Link from 'next/link';
 import { sql } from '@/lib/db';
 import { requireCompany } from '@/lib/auth';
 import { JOB_STATUS, dateBR, formatWhatsapp, brl } from '@/lib/format';
-import { closeJob, publishJob } from '@/app/actions/company';
+import { closeJob, publishJob, deleteJob } from '@/app/actions/company';
+import ConfirmButton from '@/components/ConfirmButton';
 
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Meu painel — Empregos Litoral' };
@@ -15,6 +16,7 @@ const OK = {
   paga: 'Pagamento confirmado e vaga publicada!',
   rascunho: 'Rascunho salvo.',
   encerrada: 'Vaga encerrada e removida da vitrine.',
+  excluida: 'Vaga excluída.',
 };
 
 const TAG = { PUBLISHED: 'tag', PENDING_PAYMENT: 'tag warn', DRAFT: 'tag gray', CLOSED: 'tag gray', EXPIRED: 'tag gray', SUSPENDED: 'tag red' };
@@ -106,6 +108,17 @@ export default async function Painel({ searchParams }) {
                       <button className="btn small secondary" type="submit">
                         {j.status === 'PUBLISHED' ? 'Vaga preenchida / Encerrar' : 'Encerrar'}
                       </button>
+                    </form>
+                  )}
+                  {j.status !== 'SUSPENDED' && (
+                    <form action={deleteJob} className="inline">
+                      <input type="hidden" name="job_id" value={j.id} />
+                      <ConfirmButton
+                        className="btn small danger"
+                        message={`Excluir definitivamente a vaga “${j.title}”? Esta ação não pode ser desfeita.`}
+                      >
+                        Excluir
+                      </ConfirmButton>
                     </form>
                   )}
                 </div>

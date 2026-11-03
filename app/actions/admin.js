@@ -58,6 +58,18 @@ export async function setJobStatus(formData) {
   redirect('/admin/vagas?ok=1');
 }
 
+export async function deleteJobAdmin(formData) {
+  const s = await requireAdmin();
+  const id = String(formData.get('job_id'));
+  const [r] = await tx(s, 'admin', (t) => t`SELECT delete_job(${id}::uuid, ${null}::uuid, true) AS result`);
+  revalidatePath('/');
+  if (r.result === 'DELETED') redirect('/admin/vagas?ok=excluida');
+  const msg = r.result === 'HAS_HISTORY'
+    ? 'Esta vaga tem pagamento ou denúncia registrados e não pode ser excluída. Use “Encerrar” para tirá-la do ar.'
+    : 'Vaga não encontrada.';
+  redirect('/admin/vagas?erro=' + encodeURIComponent(msg));
+}
+
 export async function setCompanyStatus(formData) {
   const s = await requireAdmin();
   const status = String(formData.get('status'));
